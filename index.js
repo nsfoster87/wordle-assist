@@ -33,19 +33,25 @@ document.addEventListener('DOMContentLoaded', function() {
     let previousTile;
     tiles.forEach(tile => tile.addEventListener('click', toggleColor));
     tiles.forEach(tile => tile.addEventListener('animationend', (e) => {
+        const letter = e.target.textContent;
+        const keyboardKey = document.querySelector(`#keyboard [data-key="${letter}"]`);
         if (e.target.dataset.animation === 'flip-in') {
             switch (e.target.dataset.state) {
                 case 'tbd':
                     e.target.dataset.state = 'absent';
+                    keyboardKey.dataset.state = 'absent';
                     break;
                 case 'absent':
                     e.target.dataset.state = 'present';
+                    keyboardKey.dataset.state = 'present';
                     break;
                 case 'present':
                     e.target.dataset.state = 'correct';
+                    keyboardKey.dataset.state = 'correct';
                     break;
                 case 'correct':
                     e.target.dataset.state = 'tbd';
+                    keyboardKey.dataset.state = '';
                     break;
                 default:
                     break;
@@ -63,16 +69,20 @@ document.addEventListener('DOMContentLoaded', function() {
     function enterLetter(e) {
         const key = e.target.dataset.key;
         // needs to be updated to be able to grab from previous row
-        console.log(currentTile);
-        console.log(previousTile);
+        // console.log(currentTile);
+        // console.log(previousTile);
         if (key === "←") {
             console.log('backspace pressed');
             if (previousTile) {
+                const keyboardKey = document.querySelector(`#keyboard [data-key="${previousTile.textContent}"]`);
                 previousTile.textContent = '';
                 previousTile.dataset.state = 'empty';
+                keyboardKey.dataset.state = '';
             }
         } else if (key === "↵") {
-            calculateWordList();
+            if (previousTile && previousTile === previousTile.parentNode.lastElementChild) {
+                calculateWordList();
+            }
         } else {
             currentTile.textContent = key;
             currentTile.dataset.animation = "pop";
