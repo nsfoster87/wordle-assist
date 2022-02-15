@@ -150,6 +150,18 @@ button.icon {
     -webkit-tap-highlight-color: rgba(0,0,0,0.3);
 }
 
+#keyboard button:focus {
+    outline: none;
+}
+
+#keyboard button.fade {
+    transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+#keyboard button:last-of-type {
+    margin: 0;
+}
+
 #keyboard .half {
     flex: 0.5;
 }
@@ -248,5 +260,35 @@ button.icon {
     40% {
         transform: scale(1.1);
         opacity: 1;
+    }
+}
+
+.tile[data-animation='flip-in'] {
+    animation-name: FlipIn;
+    animation-duration: 250ms;
+    animation-timing-function: ease-in;
+}
+
+@keyframes FlipIn {
+    0% {
+        transform: rotateX(0);
+    }
+    100% {
+        transform: rotateX(-90deg);
+    }
+}
+
+.tile[data-animation='flip-out'] {
+    animation-name: FlipOut;
+    animation-duration: 250ms;
+    animation-timing-function: ease-in;
+}
+
+@keyframes FlipOut {
+    0% {
+        transform: rotateX(-90deg);
+    }
+    100% {
+        transform: rotateX(0);
     }
 }
