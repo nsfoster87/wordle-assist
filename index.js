@@ -163,6 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     previousTile.textContent = '';
                     previousTile.dataset.state = 'empty';
                     keyboardKey.dataset.state = '';
+                    updateKeyColor(keyboardKey);
                 }
             }
         } else if (key === "↵") {
