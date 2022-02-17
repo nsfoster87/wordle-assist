@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const modalBody = document.querySelector('.modal-body');
         const modalTitle = document.getElementById('wordListModalTitle');
         modalBody.innerHTML = '';
-        modalTitle.textContent += ` (${newWordList.length})`;
+        modalTitle.textContent = `Available Words (${newWordList.length})`;
         newWordList.forEach(word => {
             const wordEl = document.createElement('p');
             wordEl.textContent = word;
