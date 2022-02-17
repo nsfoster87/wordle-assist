@@ -292,3 +292,7 @@ button.icon {
         transform: rotateX(0);
     }
 }
+
+#wordListModal {
+    text-align: center;
+}

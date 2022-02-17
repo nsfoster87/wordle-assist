@@ -159,19 +159,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (masterWord[letter].solved != "") {
                     // ...but is not present at the index of the current word, return false
                     if (word[letter] != masterWord[letter].solved) {
-                        console.log(`${word} removed: index ${letter} should be "${masterWord[letter].solved}"`);
+                        // console.log(`${word} removed: index ${letter} should be "${masterWord[letter].solved}"`);
                         return false;
                     }
                 // if letter is not solved...
                 } else {
                     // if the letter at the current index of word is known to not be at that index of masterWord
                     if (masterWord[letter].not.includes(word[letter])) {
-                        console.log(`${word} removed: index ${letter} should not be "${word[letter]}"`);
+                        // console.log(`${word} removed: index ${letter} should not be "${word[letter]}"`);
                         return false;
                     }
                     // if the letter at the current index of word is known to be absent
                     if (masterWord.absent.includes(word[letter])) {
-                        console.log(`${word} removed: ${word[letter]} should not be in word`);
+                        // console.log(`${word} removed: ${word[letter]} should not be in word`);
                         return false;
                     }
                 }
@@ -194,15 +194,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 // if the letter isn't present at any unsolved space, return false
                 if (!present) {
-                    console.log(`${word} removed: ${masterWord.present[letter]} should be present`);
+                    // console.log(`${word} removed: ${masterWord.present[letter]} should be present`);
                     return false;
                 }
             }
-            console.log(`${word} kept`);
+            // console.log(`${word} kept`);
             return true;
         });
         console.log(newWordList);
-        console.log(newWordList.length);
+        // console.log(newWordList.length);
+        const modalBody = document.querySelector('.modal-body');
+        const modalTitle = document.getElementById('wordListModalTitle');
+        modalBody.innerHTML = '';
+        modalTitle.textContent += ` (${newWordList.length})`;
+        newWordList.forEach(word => {
+            const wordEl = document.createElement('p');
+            wordEl.textContent = word;
+            modalBody.appendChild(wordEl);
+        })
+        $('#wordListModal').modal();
     }
 
     function enterLetter(e) {
