@@ -32,7 +32,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateKeyColor(key) {
         const associatedTiles = Array.from(tiles).filter(tile => tile.textContent == key.textContent);
-        if (associatedTiles.length == 1) {
+        if (associatedTiles.length == 0) {
+            key.dataset.state = '';
+        } else if (associatedTiles.length == 1) {
             key.dataset.state = associatedTiles[0].dataset.state;
         } else {
             // correct letters should take precendence over 'present' letters
@@ -151,6 +153,56 @@ document.addEventListener('DOMContentLoaded', function() {
             })
         });
         console.log(masterWord);
+        newWordList = completeWordList.filter(word => {
+            for (letter in word) {
+                // if letter is solved...
+                if (masterWord[letter].solved != "") {
+                    // ...but is not present at the index of the current word, return false
+                    if (word[letter] != masterWord[letter].solved) {
+                        console.log(`${word} removed: index ${letter} should be "${masterWord[letter].solved}"`);
+                        return false;
+                    }
+                // if letter is not solved...
+                } else {
+                    // if the letter at the current index of word is known to not be at that index of masterWord
+                    if (masterWord[letter].not.includes(word[letter])) {
+                        console.log(`${word} removed: index ${letter} should not be "${word[letter]}"`);
+                        return false;
+                    }
+                    // if the letter at the current index of word is known to be absent
+                    if (masterWord.absent.includes(word[letter])) {
+                        console.log(`${word} removed: ${word[letter]} should not be in word`);
+                        return false;
+                    }
+                }
+            }
+            // if a letter should be present but is NOT in the word:
+            for (letter in masterWord.present) {
+                // if the letter is solved, ignore this index in word
+                // when searching for presence
+                let checkindex = [];
+                for (let i = 0; i < 5; i++) {
+                    if (masterWord[i].solved == '') {
+                        checkindex.push(i);
+                    }
+                }
+                let present = false;
+                for (i in checkindex) {
+                    if (word[checkindex[i]] == masterWord.present[letter]) {
+                        present = true;
+                    }
+                }
+                // if the letter isn't present at any unsolved space, return false
+                if (!present) {
+                    console.log(`${word} removed: ${masterWord.present[letter]} should be present`);
+                    return false;
+                }
+            }
+            console.log(`${word} kept`);
+            return true;
+        });
+        console.log(newWordList);
+        console.log(newWordList.length);
     }
 
     function enterLetter(e) {
@@ -191,4 +243,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // TODO
     // add functionality for typing
+
+    // TODO
+    // allow backspace to work to delete previous line if current line is empty.
+
+    // Reading the file
+
 });

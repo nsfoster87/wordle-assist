@@ -4,6 +4,7 @@ with open('./wordle-answers-alphabetical.txt', 'r') as file:
     wordlist = []
     for word in file:
         wordlist.append(word.strip())
+# print(wordlist);
 
 newWordList = []
 print('starting wordlist count:')
