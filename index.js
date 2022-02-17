@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     });
                     if (!doubleLetter && masterWord.present.includes(letter)) {
-                        masterWord.present.splice(indexOf(letter), 1);
+                        masterWord.present.splice(masterWord.present.indexOf(letter), 1);
                     }
                 } else if (tile.dataset.state === 'present') {
                     masterWord.present.push(letter);
