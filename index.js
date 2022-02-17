@@ -64,6 +64,137 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function calculateWordList() {
         console.log('enter');
+
+        const lastRow = previousTile.parentNode;
+        lastRow.dataset.locked = 'true';
+        lastRow.dataset.full = 'true';
+        const currentRow = currentTile.parentNode;
+        currentRow.dataset.locked = 'false';
+
+        const completeWordRows = document.querySelectorAll('[data-full="true"]');
+        console.log(completeWordRows);
+
+        let completeWords = [];
+        completeWordRows.forEach(row => completeWords.push(Array.from(row.children)));
+        console.log(completeWords);
+
+        // each object in letters is a letter with a status and position in word:
+        // {
+        //  "j": {
+        //          status: correct,
+        //          position: 2
+        //       },
+        //  "l": {
+        //          status: absent,
+        //       }
+        //  "n": {
+        //          status: present,
+        //          not: [0, 2, 4]
+        //       }
+        // }
+        // needs to be tweaked. May be better to have positions as the objects
+        // and then a separate object of presentLetters and the positions they're
+        // not in
+
+        // let letters = {};
+        // completeWords.forEach(word => {
+        //     word.forEach((tile, index) => {
+        //         const letter = tile.textContent;
+        //         console.log(letter);
+        //         // if letter object doesn't exist, create one.
+        //         if (!letters[letter]) { letters[letter] = {}; }
+        //
+        //         // set the status of the letter object to the tile status
+        //         letters[letter].status = tile.dataset.state;
+        //
+        //         // set the position of the letter object if correct
+        //         // and if incorrect, add to the 'not' position array
+        //         if (letters[letter].status == 'correct') {
+        //             letters[letter].position = index;
+        //         } else if (letters[letter].status == 'present') {
+        //             if (!letters[letter].not) { letters[letter].not = []; }
+        //             letters[letter].not.push(index);
+        //         }
+        //     });
+        // });
+        // console.log(letters);
+
+        // let masterWord = {};
+        // {
+        //     0: {
+        //         solved: "a",
+        //     },
+        //     1: {
+        //         solved: "p",
+        //     },
+        //     2: {
+        //         not: ["e"],
+        //     },
+        //     present: ["e", "p"]
+        //     absent: ["r", "s", "i", "f"]
+        // }
+        let masterWord = {
+            0: {
+                solved: "",
+                not: []
+            },
+            1: {
+                solved: "",
+                not: []
+            },
+            2: {
+                solved: "",
+                not: []
+            },
+            3: {
+                solved: "",
+                not: []
+            },
+            4: {
+                solved: "",
+                not: []
+            },
+            present: [],
+            absent: []
+        };
+        completeWords.forEach(word => {
+            const wordArray = word.map(tile => tile.textContent);
+            console.log(wordArray);
+
+            word.forEach((tile, index) => {
+                let doubleLetter = false;
+                const letter = tile.textContent;
+                if (tile.dataset.state === 'correct') {
+                    masterWord[index].solved = letter;
+
+                    // remove from present array IF letter isn't ALSO present separately
+                    wordArray.forEach((char, charIndex) => {
+                        if (char === letter && charIndex !== index && word[charIndex].dataset.state === 'present') {
+                            doubleLetter = true;
+                        }
+                    });
+                    if (!doubleLetter && masterWord.present.includes(letter)) {
+                        masterWord.present.splice(indexOf(letter), 1);
+                    }
+                } else if (tile.dataset.state === 'present') {
+                    masterWord.present.push(letter);
+                    masterWord[index].not.push(letter);
+                } else if (tile.dataset.state === 'absent') {
+                    if (!masterWord.absent.includes(letter)) {
+                        masterWord.absent.push(letter);
+                    }
+                }
+            })
+        });
+        console.log(masterWord);
+
+        // const wordTiles = Array.from(lastRow.children);
+        // let word = wordTiles.reduce((word, tile) => {
+        //     word += tile.textContent;
+        //     return word;
+        // }, '');
+        // console.log(word);
+
     }
 
     function enterLetter(e) {
@@ -74,19 +205,23 @@ document.addEventListener('DOMContentLoaded', function() {
         if (key === "←") {
             console.log('backspace pressed');
             if (previousTile) {
-                const keyboardKey = document.querySelector(`#keyboard [data-key="${previousTile.textContent}"]`);
-                previousTile.textContent = '';
-                previousTile.dataset.state = 'empty';
-                keyboardKey.dataset.state = '';
+                if (previousTile.parentNode.dataset.locked === 'false') {
+                    const keyboardKey = document.querySelector(`#keyboard [data-key="${previousTile.textContent}"]`);
+                    previousTile.textContent = '';
+                    previousTile.dataset.state = 'empty';
+                    keyboardKey.dataset.state = '';
+                }
             }
         } else if (key === "↵") {
             if (previousTile && previousTile === previousTile.parentNode.lastElementChild) {
                 calculateWordList();
             }
         } else {
-            currentTile.textContent = key;
-            currentTile.dataset.animation = "pop";
-            currentTile.dataset.state = 'tbd';
+            if (currentTile.parentNode.dataset.locked === "false") {
+                currentTile.textContent = key;
+                currentTile.dataset.animation = "pop";
+                currentTile.dataset.state = 'tbd';
+            }
         }
         const filledTiles = document.querySelectorAll('.tile:not([data-state="empty"])');
         previousTile = filledTiles[filledTiles.length - 1];
