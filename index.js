@@ -128,6 +128,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const wordArray = word.map(tile => tile.textContent);
 
             word.forEach((tile, index) => {
+                // get all the siblings of the current tile
+                let siblings = [];
+                if (tile.parentNode) {
+                    let sibling = tile.parentNode.firstElementChild;
+                    while (sibling) {
+                        if (sibling !== tile) {
+                            siblings.push(sibling);
+                        }
+                        sibling = sibling.nextElementSibling;
+                    }
+                }
+
                 let doubleLetter = false;
                 const letter = tile.textContent;
                 if (tile.dataset.state === 'correct') {
@@ -143,7 +155,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         masterWord.present.splice(masterWord.present.indexOf(letter), 1);
                     }
                 } else if (tile.dataset.state === 'present') {
-                    masterWord.present.push(letter);
+                    if (!masterWord.present.includes(letter)) {
+                        masterWord.present.push(letter);
+                    }
                     masterWord[index].not.push(letter);
                 } else if (tile.dataset.state === 'absent') {
                     if (!masterWord.absent.includes(letter)) {
@@ -215,10 +229,14 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#wordListModal').modal();
     }
 
+    document.getElementById('show-words').addEventListener('click', calculateWordList);
+
     function enterLetter(e) {
         const key = e.target.dataset.key;
         const keyboardKey = document.querySelector(`#keyboard [data-key="${key}"]`);
         if (key === "←") {
+            // TODO
+            // Add the ability to unlock the and edit previous row if current row is empty
             if (previousTile) {
                 if (previousTile.parentNode.dataset.locked === 'false') {
                     const keyboardKey = document.querySelector(`#keyboard [data-key="${previousTile.textContent}"]`);
@@ -231,7 +249,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (key === "↵") {
             // only allow enter to react if user has filled entire row
             if (previousTile && previousTile === previousTile.parentNode.lastElementChild) {
-                calculateWordList();
+                previousTile.parentNode.dataset.locked = 'true';
+                currentTile.parentNode.dataset.locked = 'false';
             }
         } else {
             if (currentTile.parentNode.dataset.locked === "false") {
