@@ -93,6 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentRow = currentTile.parentNode;
         currentRow.dataset.locked = 'false';
 
+        // ISSUE
+        // data-full is not true if multiple rows are entered at the same time
+        // before the 'show words' button is pressed
+        // move to 'enter' button functionality
         const completeWordRows = document.querySelectorAll('[data-full="true"]');
 
         let completeWords = [];
@@ -233,11 +237,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function enterLetter(e) {
         const key = e.target.dataset.key;
-        const keyboardKey = document.querySelector(`#keyboard [data-key="${key}"]`);
+        const keyboardKey = e.target;
         if (key === "←") {
             // TODO
             // Add the ability to unlock the and edit previous row if current row is empty
             if (previousTile) {
+                if (previousTile.parentNode.dataset.locked === 'true' &&
+                    currentTile === currentTile.parentNode.firstElementChild) {
+                        previousTile.parentNode.dataset.locked = 'false';
+                        previousTile.parentNode.dataset.full = 'false';
+                    }
                 if (previousTile.parentNode.dataset.locked === 'false') {
                     const keyboardKey = document.querySelector(`#keyboard [data-key="${previousTile.textContent}"]`);
                     previousTile.textContent = '';
@@ -248,10 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else if (key === "↵") {
             // only allow enter to react if user has filled entire row
-            if (previousTile && previousTile === previousTile.parentNode.lastElementChild) {
-                previousTile.parentNode.dataset.locked = 'true';
-                currentTile.parentNode.dataset.locked = 'false';
-            }
         } else {
             if (currentTile.parentNode.dataset.locked === "false") {
                 currentTile.textContent = key;
@@ -265,6 +270,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const filledTiles = document.querySelectorAll('.tile:not([data-state="empty"])');
         previousTile = filledTiles[filledTiles.length - 1];
         currentTile = document.querySelector('[data-state="empty"]');
+
+        if (previousTile && previousTile === previousTile.parentNode.lastElementChild) {
+            previousTile.parentNode.dataset.locked = 'true';
+            previousTile.parentNode.dataset.full = 'true';
+            currentTile.parentNode.dataset.locked = 'false';
+        }
     }
 
     const keys = document.querySelectorAll('#keyboard button');

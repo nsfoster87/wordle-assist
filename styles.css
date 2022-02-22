@@ -194,10 +194,14 @@ button.icon {
     color: var(--key-evaluated-text-color);
 }
 
-.row {
+#board .row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 5px;
+}
+
+#board .gamerow:host {
+    display: block;
 }
 
 .tile {
