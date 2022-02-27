@@ -165,7 +165,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     masterWord[index].not.push(letter);
                 } else if (tile.dataset.state === 'absent') {
                     if (!masterWord.absent.includes(letter)) {
-                        masterWord.absent.push(letter);
+                        // if a 'present' sibling has the same letter, don't add to absent array
+                        const hasPresentSibling = siblings.some(sibling =>
+                            sibling.textContent == letter && sibling.dataset.state == 'present');
+                        if (!hasPresentSibling) {
+                            masterWord.absent.push(letter);
+                        }
                     }
                 }
             })
