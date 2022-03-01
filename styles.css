@@ -227,6 +227,10 @@ button.icon {
     }
 }
 
+#show-words {
+    margin-bottom: 5px;
+}
+
 #keyboard {
     height: var(--keyboard-height);
     margin: 0 8px;
