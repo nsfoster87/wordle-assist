@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
             board.style.width = '350px';
         } else {
             board.style.height = boardContainer.offsetHeight + 'px';
-            board.style.width = board.offsetHeight * 0.84 + 'px';
+            board.style.width = boardContainer.offsetHeight * 0.84 + 'px';
         }
     }
 

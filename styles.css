@@ -41,6 +41,7 @@
 
 html {
     height: 100%;
+    display: block;
 }
 body {
     height: 100%;
@@ -117,91 +118,20 @@ button.icon {
     padding: 0 4px;
 }
 
-#keyboard {
-    height: var(--keyboard-height);
-    margin: 0 8px;
-    user-select: none;
+.gamerow {
+    display: block;
 }
 
-#keyboard .row {
-    display: flex;
-    width: 100%;
-    margin: 0 auto 8px;
-    touch-action: manipulation;
-}
-
-#keyboard button {
-    font-family: inherit;
-    font-weight: bold;
-    border: 0;
-    padding: 0;
-    margin: 0 6px 0 0;
-    height: 58px;
-    border-radius: 4px;
-    cursor: pointer;
-    user-select: none;
-    background-color: var(--key-bg);
-    color: var(--key-text-color);
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-transform: uppercase;
-    -webkit-tap-highlight-color: rgba(0,0,0,0.3);
-}
-
-#keyboard button:focus {
-    outline: none;
-}
-
-#keyboard button.fade {
-    transition: background-color 0.1s ease, color 0.1s ease;
-}
-
-#keyboard button:last-of-type {
-    margin: 0;
-}
-
-#keyboard .half {
-    flex: 0.5;
-}
-
-#keyboard .one {
-    flex: 1;
-}
-
-#keyboard .one-and-a-half {
-    flex: 1.5;
-    font-size: 12px;
-}
-
-#keyboard .two {
-    flex: 2;
-}
-
-#keyboard button[data-state='correct'] {
-    background-color: var(--key-bg-correct);
-    color: var(--key-evaluated-text-color);
-}
-
-#keyboard button[data-state='present'] {
-    background-color: var(--key-bg-present);
-    color: var(--key-evaluated-text-color);
-}
-
-#keyboard button[data-state='absent'] {
-    background-color: var(--key-bg-absent);
-    color: var(--key-evaluated-text-color);
-}
-
-#board .row {
+.gamerow .row {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 5px;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 
-#board .gamerow:host {
-    display: block;
+.gametile {
+    display: inline-block;
 }
 
 .tile {
@@ -295,6 +225,83 @@ button.icon {
     100% {
         transform: rotateX(0);
     }
+}
+
+#keyboard {
+    height: var(--keyboard-height);
+    margin: 0 8px;
+    user-select: none;
+}
+
+#keyboard .row {
+    display: flex;
+    width: 100%;
+    margin: 0 auto 8px;
+    touch-action: manipulation;
+}
+
+#keyboard button {
+    font-family: inherit;
+    font-weight: bold;
+    border: 0;
+    padding: 0;
+    margin: 0 6px 0 0;
+    height: 58px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--key-bg);
+    color: var(--key-text-color);
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.3);
+}
+
+#keyboard button:focus {
+    outline: none;
+}
+
+#keyboard button.fade {
+    transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+#keyboard button:last-of-type {
+    margin: 0;
+}
+
+#keyboard .half {
+    flex: 0.5;
+}
+
+#keyboard .one {
+    flex: 1;
+}
+
+#keyboard .one-and-a-half {
+    flex: 1.5;
+    font-size: 12px;
+}
+
+#keyboard .two {
+    flex: 2;
+}
+
+#keyboard button[data-state='correct'] {
+    background-color: var(--key-bg-correct);
+    color: var(--key-evaluated-text-color);
+}
+
+#keyboard button[data-state='present'] {
+    background-color: var(--key-bg-present);
+    color: var(--key-evaluated-text-color);
+}
+
+#keyboard button[data-state='absent'] {
+    background-color: var(--key-bg-absent);
+    color: var(--key-evaluated-text-color);
 }
 
 #wordListModal {
