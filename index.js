@@ -87,9 +87,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }));
 
     function calculateWordList() {
-        const lastRow = previousTile.parentNode;
-        lastRow.dataset.locked = 'true';
-        lastRow.dataset.full = 'true';
+        if (previousTile) {
+            const lastRow = previousTile.parentNode;
+            lastRow.dataset.locked = 'true';
+            lastRow.dataset.full = 'true';
+        }
         const currentRow = currentTile.parentNode;
         currentRow.dataset.locked = 'false';
 
@@ -230,11 +232,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const modalTitle = document.getElementById('wordListModalTitle');
         modalBody.innerHTML = '';
         modalTitle.textContent = `Available Words (${newWordList.length})`;
+        let wordCount = 0;
+        let wordEl;
         newWordList.forEach(word => {
-            const wordEl = document.createElement('p');
-            wordEl.textContent = word;
-            modalBody.appendChild(wordEl);
+            if (wordCount % 5 == 0) {
+                if (wordCount != 0) {
+                    modalBody.appendChild(wordEl);
+                }
+                wordEl = document.createElement('p');
+                wordEl.textContent = word + ', ';
+            } else if (wordCount === newWordList.length - 1) {
+                wordEl.textContent += word;
+            } else {
+                wordEl.textContent += word + ', ';
+            }
+            wordCount++;
         })
+        if (wordEl) {
+            modalBody.appendChild(wordEl);
+        }
         $('#wordListModal').modal();
     }
 
