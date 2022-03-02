@@ -92,9 +92,10 @@ document.addEventListener('DOMContentLoaded', function() {
             lastRow.dataset.locked = 'true';
             lastRow.dataset.full = 'true';
         }
-        const currentRow = currentTile.parentNode;
-        currentRow.dataset.locked = 'false';
-
+        if (currentTile) {
+            const currentRow = currentTile.parentNode;
+            currentRow.dataset.locked = 'false';
+        }
         // ISSUE
         // data-full is not true if multiple rows are entered at the same time
         // before the 'show words' button is pressed
@@ -257,14 +258,25 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('show-words').addEventListener('click', calculateWordList);
 
     function enterLetter(e) {
-        const key = e.target.dataset.key;
-        const keyboardKey = e.target;
-        if (key === "←") {
-            // TODO
-            // Add the ability to unlock the and edit previous row if current row is empty
+        if (!currentTile && e.code !== 'Backspace' && e.target.dataset.key !== "←") { return; }
+        const regex = /Key\w/i;
+        const backspace = /Backspace/;
+        let keyboardKey;
+        if (e.type === 'click') {
+            key = e.target.dataset.key;
+            keyboardKey = e.target;
+        } else if (regex.test(e.code) || backspace.test(e.code)){
+            key = e.key;
+            keyboardKey = document.querySelector(`#keyboard [data-key="${key}"]`);
+        } else {
+            console.log('not a valid keyboard key');
+            return;
+        }
+        if (key === "←" || key === 'Backspace') {
+
             if (previousTile) {
                 if (previousTile.parentNode.dataset.locked === 'true' &&
-                    currentTile === currentTile.parentNode.firstElementChild) {
+                    (!currentTile || currentTile === currentTile.parentNode.firstElementChild)) {
                         previousTile.parentNode.dataset.locked = 'false';
                         previousTile.parentNode.dataset.full = 'false';
                     }
@@ -276,8 +288,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateKeyColor(keyboardKey);
                 }
             }
-        } else if (key === "↵") {
-            // only allow enter to react if user has filled entire row
         } else {
             if (currentTile.parentNode.dataset.locked === "false") {
                 currentTile.textContent = key;
@@ -295,12 +305,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (previousTile && previousTile === previousTile.parentNode.lastElementChild) {
             previousTile.parentNode.dataset.locked = 'true';
             previousTile.parentNode.dataset.full = 'true';
-            currentTile.parentNode.dataset.locked = 'false';
+            if (currentTile) {
+                currentTile.parentNode.dataset.locked = 'false';
+            }
         }
     }
 
     const keys = document.querySelectorAll('#keyboard button');
+    // stop the enter button from triggering a click event on the keyboard buttons
+    keys.forEach(key => key.addEventListener('keydown', function(e) {
+        if (e.code === 'Enter') {
+            e.preventDefault();
+        }
+    }));
     keys.forEach(key => key.addEventListener('click', enterLetter));
+    document.addEventListener('keyup', enterLetter);
+
 
     // TODO
     // add functionality for typing
