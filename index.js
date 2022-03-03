@@ -1,10 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     const board = document.getElementById('board');
     const boardContainer = document.getElementById('board-container');
-    const tiles = document.querySelectorAll('.tile');
+    const tiles = document.querySelectorAll('.tile:not([data-modal="true"])');
+    const modalClickTiles = document.querySelectorAll('[data-modal="true"]');
 
     let currentTile = document.querySelector('[data-state="empty"]');
     let previousTile = null;
+    console.log({previousTile});
+    console.log({currentTile});
 
     function resizeBoard() {
         if (boardContainer.offsetHeight >= 420) {
@@ -18,6 +21,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // on load, set the board's width and height
     resizeBoard();
+
+    function showInstructions() {
+        $('#gameHelpModal').modal();
+    }
+
+    // on load, populate instruction modal
+    showInstructions();
 
     // on resize, set the board's width and height
     window.addEventListener('resize', resizeBoard);
@@ -86,6 +96,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }));
 
+    // consolidate this and the above method if possible
+    modalClickTiles.forEach(tile => tile.addEventListener('click', toggleColor));
+    modalClickTiles.forEach(tile => tile.addEventListener('animationend', (e) => {
+        const letter = e.target.textContent;
+        if (e.target.dataset.animation === 'flip-in') {
+            switch (e.target.dataset.state) {
+                case 'absent':
+                    e.target.dataset.state = 'present';
+                    break;
+                case 'present':
+                    e.target.dataset.state = 'correct';
+                    break;
+                case 'correct':
+                    e.target.dataset.state = 'absent';
+                    break;
+                default:
+                    break;
+            }
+            e.target.dataset.animation = 'flip-out';
+        } else {
+            e.target.dataset.animation = 'idle';
+        }
+    }))
+
     function calculateWordList() {
         if (previousTile) {
             const lastRow = previousTile.parentNode;
@@ -104,6 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let completeWords = [];
         completeWordRows.forEach(row => completeWords.push(Array.from(row.children)));
+        console.log({completeWords});
 
         // masterword object
         let masterWord = {
@@ -258,7 +293,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('show-words').addEventListener('click', calculateWordList);
 
     function enterLetter(e) {
+        // if the grid is full, only allow backspace to be pressed.
         if (!currentTile && e.code !== 'Backspace' && e.target.dataset.key !== "←") { return; }
+
+        // if using a keyboard, only allow valid letters and backspace to do anything
         const regex = /Key\w/i;
         const backspace = /Backspace/;
         let keyboardKey;
@@ -269,17 +307,21 @@ document.addEventListener('DOMContentLoaded', function() {
             key = e.key;
             keyboardKey = document.querySelector(`#keyboard [data-key="${key}"]`);
         } else {
-            console.log('not a valid keyboard key');
             return;
         }
-        if (key === "←" || key === 'Backspace') {
 
+        if (key === "←" || key === 'Backspace') {
+            // if there is no previous tile, backspace should do nothing
             if (previousTile) {
+                // if user is on the first tile of a new row, typing backspace will unlock
+                // and edit the previous row
                 if (previousTile.parentNode.dataset.locked === 'true' &&
                     (!currentTile || currentTile === currentTile.parentNode.firstElementChild)) {
                         previousTile.parentNode.dataset.locked = 'false';
                         previousTile.parentNode.dataset.full = 'false';
                     }
+
+                // if previous row is not locked, delete the previous tile and update keyboard key color
                 if (previousTile.parentNode.dataset.locked === 'false') {
                     const keyboardKey = document.querySelector(`#keyboard [data-key="${previousTile.textContent}"]`);
                     previousTile.textContent = '';
@@ -288,7 +330,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateKeyColor(keyboardKey);
                 }
             }
+        // for any valid letter key other than backspace:
         } else {
+            // only do something if the current row is 'unlocked'
             if (currentTile.parentNode.dataset.locked === "false") {
                 currentTile.textContent = key;
                 currentTile.dataset.animation = "pop";
@@ -298,7 +342,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // calculate the new previousTile and currentTile
-        const filledTiles = document.querySelectorAll('.tile:not([data-state="empty"])');
+        // const filledTiles = document.querySelectorAll('.tile:not([data-state="empty"])');
+        const filledTiles = Array.from(tiles).filter(tile => tile.dataset.state !== 'empty');
+        console.log({filledTiles});
         previousTile = filledTiles[filledTiles.length - 1];
         currentTile = document.querySelector('[data-state="empty"]');
 
@@ -309,6 +355,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentTile.parentNode.dataset.locked = 'false';
             }
         }
+        console.log({previousTile});
+        console.log({currentTile});
     }
 
     const keys = document.querySelectorAll('#keyboard button');
@@ -320,14 +368,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }));
     keys.forEach(key => key.addEventListener('click', enterLetter));
     document.addEventListener('keyup', enterLetter);
-
-
-    // TODO
-    // add functionality for typing
-
-    // TODO
-    // allow backspace to work to delete previous line if current line is empty.
-
-    // Reading the file
 
 });

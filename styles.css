@@ -316,3 +316,50 @@ button.icon {
     max-height: calc(100vh - 210px);
     overflow-y: auto;
 }
+
+#gameHelpModalBody {
+    padding-top: 0px;
+}
+
+.modal-body section {
+    padding: 16px;
+    padding-top: 0px;
+    display: block;
+}
+
+.modal-body .instructions {
+    font-size: 14px;
+    color: var(--color-tone-1);
+}
+
+.modal-body p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+.modal-body .examples {
+    border-bottom: 1px solid var(--color-tone-4);
+    border-top: 1px solid var(--color-tone-4);
+}
+
+.modal-body .example {
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+/* .modal-body .row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 5px;
+    margin-left: 0px;
+    margin-right: 0px;
+} */
+
+.modal-body .game-tile {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+}
