@@ -319,6 +319,7 @@ button.icon {
 
 #gameHelpModalBody {
     padding-top: 0px;
+    max-height: calc(100vh);
 }
 
 .modal-body section {
