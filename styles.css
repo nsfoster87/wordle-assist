@@ -54,7 +54,7 @@ header {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-wrap: nowrap;
     padding: 0 16px;
     height: var(--header-height);
@@ -116,6 +116,14 @@ button.icon {
     border: none;
     cursor: pointer;
     padding: 0 4px;
+}
+
+button.icon:focus {
+    outline: none;
+}
+
+.menu-right {
+    width: 32px;
 }
 
 .gamerow {

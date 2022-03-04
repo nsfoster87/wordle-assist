@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const boardContainer = document.getElementById('board-container');
     const tiles = document.querySelectorAll('.tile:not([data-modal="true"])');
     const modalClickTiles = document.querySelectorAll('[data-modal="true"]');
+    const infoButton = document.getElementById('help-button');
+    const MINUTES_TIL_COOKIE_EXPIRES = 5;
+    const DAYS_TIL_COOKIE_EXPIRES = 30;
 
     let currentTile = document.querySelector('[data-state="empty"]');
     let previousTile = null;
@@ -26,8 +29,18 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#gameHelpModal').modal();
     }
 
-    // on load, populate instruction modal
-    showInstructions();
+    // if user is visiting for the first time, populate instruction modal
+    if (document.cookie == '') {
+        showInstructions();
+    }
+    const d = new Date();
+    d.setTime(d.getTime() + MINUTES_TIL_COOKIE_EXPIRES*60*1000);
+    const expires = "expires=" + d.toUTCString();
+    document.cookie = 'visited=true;' + expires + ';path=/';
+    console.log(document.cookie);
+
+    // show instructions when info button is clicked
+    infoButton.addEventListener('click', showInstructions);
 
     // on resize, set the board's width and height
     window.addEventListener('resize', resizeBoard);
@@ -276,7 +289,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     modalBody.appendChild(wordEl);
                 }
                 wordEl = document.createElement('p');
-                wordEl.textContent = word + ', ';
+                wordEl.textContent = word;
+                if (newWordList.length !== 1) {
+                    wordEl.textContent += ", ";
+                }
             } else if (wordCount === newWordList.length - 1) {
                 wordEl.textContent += word;
             } else {
