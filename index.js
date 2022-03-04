@@ -23,6 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // on load, set the board's width and height
     resizeBoard();
 
+    // reset modal to top after hiding
+    $('#wordListModal').on('hide.bs.modal', () => {
+        console.log('hiding modal');
+        $('.modal-body').scrollTop(0);
+    });
+
     function showInstructions() {
         $('#gameHelpModal').modal();
     }
@@ -288,16 +294,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 wordEl = document.createElement('p');
                 wordEl.textContent = word;
-                if (newWordList.length !== 1) {
-                    wordEl.textContent += ", ";
-                }
-            } else if (wordCount === newWordList.length - 1) {
-                wordEl.textContent += word;
             } else {
-                wordEl.textContent += word + ', ';
+                wordEl.textContent += word;
+            }
+            // for any word that is not the last word, add a comma
+            if (wordCount !== newWordList.length - 1) {
+                wordEl.textContent += ", ";
             }
             wordCount++;
-        })
+        });
         if (wordEl) {
             modalBody.appendChild(wordEl);
         }
