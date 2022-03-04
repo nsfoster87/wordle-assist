@@ -4,13 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const tiles = document.querySelectorAll('.tile:not([data-modal="true"])');
     const modalClickTiles = document.querySelectorAll('[data-modal="true"]');
     const infoButton = document.getElementById('help-button');
-    const MINUTES_TIL_COOKIE_EXPIRES = 5;
-    const DAYS_TIL_COOKIE_EXPIRES = 30;
+    const MINUTES_TIL_COOKIE_EXPIRES = 5; // for testing
+    const DAYS_TIL_COOKIE_EXPIRES = 14;
 
     let currentTile = document.querySelector('[data-state="empty"]');
     let previousTile = null;
-    console.log({previousTile});
-    console.log({currentTile});
 
     function resizeBoard() {
         if (boardContainer.offsetHeight >= 420) {
@@ -34,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showInstructions();
     }
     const d = new Date();
-    d.setTime(d.getTime() + MINUTES_TIL_COOKIE_EXPIRES*60*1000);
+    d.setTime(d.getTime() + DAYS_TIL_COOKIE_EXPIRES*24*60*60*1000);
     const expires = "expires=" + d.toUTCString();
     document.cookie = 'visited=true;' + expires + ';path=/';
     console.log(document.cookie);
@@ -371,8 +369,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentTile.parentNode.dataset.locked = 'false';
             }
         }
-        console.log({previousTile});
-        console.log({currentTile});
     }
 
     const keys = document.querySelectorAll('#keyboard button');
