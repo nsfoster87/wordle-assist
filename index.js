@@ -34,7 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // if user is visiting for the first time, populate instruction modal
-    if (document.cookie == '') {
+    // or if debugging on local machine don't show
+    if (location.hostname !== '' && document.cookie == '') {
         showInstructions();
     }
     const d = new Date();
@@ -286,26 +287,12 @@ document.addEventListener('DOMContentLoaded', function() {
         modalBody.innerHTML = '';
         modalTitle.textContent = `Available Words (${newWordList.length})`;
         let wordCount = 0;
-        let wordEl;
         newWordList.forEach(word => {
-            if (wordCount % 5 == 0) {
-                if (wordCount != 0) {
-                    modalBody.appendChild(wordEl);
-                }
-                wordEl = document.createElement('p');
-                wordEl.textContent = word;
-            } else {
-                wordEl.textContent += word;
-            }
-            // for any word that is not the last word, add a comma
-            if (wordCount !== newWordList.length - 1) {
-                wordEl.textContent += ", ";
-            }
-            wordCount++;
-        });
-        if (wordEl) {
+            const wordEl = document.createElement('div');
+            wordEl.classList.add('word');
+            wordEl.textContent = word;
             modalBody.appendChild(wordEl);
-        }
+        });
         $('#wordListModal').modal();
     }
 

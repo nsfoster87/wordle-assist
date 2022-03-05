@@ -359,16 +359,20 @@ button.icon:focus {
     margin-bottom: 24px;
 }
 
-/* .modal-body .row {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 5px;
-    margin-left: 0px;
-    margin-right: 0px;
-} */
-
 .modal-body .game-tile {
     width: 40px;
     height: 40px;
     display: inline-block;
+}
+
+#wordListModal .modal-body {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.word {
+    display: inline-flex;
+    flex-basis: 20%;
+    padding: 2px;
+    justify-content: space-around;
 }
